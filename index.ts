@@ -4,7 +4,7 @@ import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-age
 import { Key } from "@mariozechner/pi-tui";
 import { extractTodoItems, isSafeCommand, markCompletedSteps, type TodoItem } from "./utils.ts";
 
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "ask_user_question"];
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "ask_user_question", "todo"];
 const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
 
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
@@ -143,7 +143,7 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, ask_user_question
+- You can only use: read, bash, grep, find, ls, ask_user_question, todo
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
