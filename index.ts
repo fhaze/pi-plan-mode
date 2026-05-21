@@ -148,18 +148,24 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, questionnaire
+- You can only use: read, bash, grep, find, ls
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
-Ask clarifying questions if requirements are ambiguous.
+Ask clarifying questions if requirements are ambiguous. Explore the codebase freely using read-only tools.
 
-Create a detailed numbered plan under a "Plan:" header:
+When done exploring, state what you will do. Only create a formal numbered plan under a "Plan:" header for complex or multi-step tasks. For simple tasks, just confirm your approach briefly:
 
+Simple task example:
+"I'll create a standalone HTML file (cat.html) with an inline SVG cat, centered on the page with a colored background."
+
+Complex task example:
 Plan:
-1. First step description
-2. Second step description
-...
+1. Analyze the existing authentication module
+2. Design the new OAuth2 integration
+3. Update the user model and database schema
+4. Implement the auth flow
+5. Add tests
 
 Do NOT attempt to make changes - just describe what you would do.`,
 					display: false,
