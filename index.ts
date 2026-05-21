@@ -282,16 +282,23 @@ Workflow:
 2. Ask clarifying questions via ask_user_question if needed
 3. Present your plan using the EXACT format below
 
+Guidelines:
+- Prefer 2–5 steps. Only use more for genuinely large tasks (multi-file refactors, new features from scratch)
+- Each step should represent a MEANINGFUL unit of work, not a micro-task
+- BAD: "Read current code", "Identify the bug", "Fix the bug", "Test the fix" → over-fragmented
+- GOOD: "Fix off-by-one error in parser" → one coherent task
+- BAD: "Create directory", "Add config file", "Write main module", "Write tests" → too granular
+- GOOD: "Set up project structure and main module", "Add tests"
+
 For ANY task with more than one step, you MUST format your plan like this:
 
 Plan:
 1. Short imperative title (max 60 chars)
 2. Short imperative title (max 60 chars)
-3. Short imperative title (max 60 chars)
 
 Rules:
 - The "Plan:" header and numbered steps are REQUIRED — they are parsed automatically
-- Each step title must be SHORT and IMPERATIVE (e.g., "Create index.html with canvas", "Build game loop and input system", "Add collision detection")
+- Each step title must be SHORT and IMPERATIVE (e.g., "Fix off-by-one in parser", "Add auth middleware and tests")
 - Do NOT include details, sub-items, or long descriptions in the step title
 - Do NOT use bullets, dashes, or other formats
 - You can explain details in your response text BEFORE or AFTER the plan
