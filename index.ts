@@ -155,26 +155,45 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	pi.registerTool({
 		name: "complete_step",
 		label: "Complete Step",
-		description: "Mark a plan step as completed. Call this after finishing each step during plan execution.",
-		promptSnippet: "Mark a plan step as done after completing it",
+		description: "Mark one or more plan steps as completed. Call this after finishing each step during plan execution. You can pass a single step number or an array to mark multiple steps done at once.",
+		promptSnippet: "Mark plan steps as done after completing them",
+		promptGuidelines: [
+			"Call complete_step after completing each plan step. You can batch multiple steps in a single call using the steps array.",
+			"Example: complete_step({ step: 1 }) for a single step, or complete_step({ steps: [1, 2, 3] }) for multiple.",
+		],
 		parameters: Type.Object({
-			step: Type.Number({ description: "The step number to mark as completed" }),
+			step: Type.Optional(Type.Number({ description: "Single step number to mark as completed" })),
+			steps: Type.Optional(Type.Array(Type.Number(), { description: "Multiple step numbers to mark as completed" })),
 		}),
 		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-			const step = params.step as number;
-			const item = todoItems.find((t) => t.step === step);
-			if (!item) {
-				return { content: [{ type: "text", text: `Step ${step} not found in plan.` }], isError: true };
+			const stepNums: number[] = [];
+			if (Array.isArray(params.steps)) {
+				stepNums.push(...(params.steps as number[]));
 			}
-			if (item.completed) {
-				return { content: [{ type: "text", text: `Step ${step} already completed.` }] };
+			if (typeof params.step === "number") {
+				stepNums.push(params.step as number);
 			}
-			item.completed = true;
+			if (stepNums.length === 0) {
+				return { content: [{ type: "text", text: "Provide step or steps parameter." }], isError: true };
+			}
+
+			const results: string[] = [];
+			for (const step of stepNums) {
+				const item = todoItems.find((t) => t.step === step);
+				if (!item) {
+					results.push(`Step ${step}: not found`);
+				} else if (item.completed) {
+					results.push(`Step ${step}: already done`);
+				} else {
+					item.completed = true;
+					results.push(`Step ${step}: done`);
+				}
+			}
 			updateWidget(ctx);
 			persistState();
 			const completed = todoItems.filter((t) => t.completed).length;
 			return {
-				content: [{ type: "text", text: `Step ${step} done: ${item.text} (${completed}/${todoItems.length})` }],
+				content: [{ type: "text", text: `${results.join(", ")} (${completed}/${todoItems.length})` }],
 			};
 		},
 		renderResult(result, _opts, theme) {
