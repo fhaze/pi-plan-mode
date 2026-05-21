@@ -334,11 +334,7 @@ After completing a step, include a [DONE:n] tag in your response.`,
 			updateWidget(ctx);
 			persistState();
 
-			const execMessage = `Execute the plan. Start with: ${todoItems[0].text}`;
-			pi.sendMessage(
-				{ customType: "plan-mode-execute", content: execMessage, display: true },
-				{ triggerTurn: true },
-			);
+			pi.sendUserMessage(`Execute the plan. Start with: ${todoItems[0].text}`);
 		} else if (choice === "Refine the plan") {
 			const refinement = await ctx.ui.editor("Refine the plan:", "");
 			if (refinement?.trim()) {
