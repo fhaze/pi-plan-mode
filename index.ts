@@ -106,8 +106,12 @@ IMPORTANT: When creating multiple tasks, issue ALL todo create calls in parallel
   todo({ action: "create", subject: "Analyze auth module" })
   todo({ action: "create", subject: "Design OAuth2 integration", blockedBy: [1] })
   todo({ action: "create", subject: "Update user model and schema", blockedBy: [2] })
-  todo({ action: "create", subject: "Implement auth flow", blockedBy: [2, 3] })
-  todo({ action: "create", subject: "Add tests", blockedBy: [4] })
+
+When refining the plan, use:
+  todo({ action: "update", id: 2, subject: "Revised description" })   — edit a task
+  todo({ action: "update", id: 3, status: "deleted" })                 — remove a task
+  todo({ action: "clear" })                                             — remove all tasks and start fresh
+  todo({ action: "create", subject: "New task", blockedBy: [1, 2] })   — add a task
 
 You CANNOT use: edit, write. Do NOT attempt to make changes.`,
 				display: false,
