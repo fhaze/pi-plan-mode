@@ -285,11 +285,16 @@ Workflow:
 For ANY task with more than one step, you MUST format your plan like this:
 
 Plan:
-1. First step description
-2. Second step description
-3. Third step description
+1. Short imperative title (max 60 chars)
+2. Short imperative title (max 60 chars)
+3. Short imperative title (max 60 chars)
 
-The "Plan:" header and numbered steps are REQUIRED — they are parsed automatically. Do NOT use bullets, dashes, or other formats. Do NOT skip the "Plan:" header.
+Rules:
+- The "Plan:" header and numbered steps are REQUIRED — they are parsed automatically
+- Each step title must be SHORT and IMPERATIVE (e.g., "Create index.html with canvas", "Build game loop and input system", "Add collision detection")
+- Do NOT include details, sub-items, or long descriptions in the step title
+- Do NOT use bullets, dashes, or other formats
+- You can explain details in your response text BEFORE or AFTER the plan
 
 For simple single-step tasks, just confirm your approach briefly without a Plan: header.
 
