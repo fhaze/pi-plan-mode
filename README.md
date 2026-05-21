@@ -1,21 +1,19 @@
 # Pi Plan Mode
 
-Read-only plan mode for [Pi coding agent](https://github.com/earendil-works/pi).
-
-Delegates task tracking to [rpiv-todo](https://github.com/juicesharp/rpiv-mono/tree/main/packages/rpiv-todo) and clarifying questions to [rpiv-ask-user-question](https://github.com/juicesharp/rpiv-mono/tree/main/packages/rpiv-ask-user-question).
+Read-only plan mode for [Pi coding agent](https://github.com/earendil-works/pi) with execution tracking.
 
 ## Features
 
 - **Read-only enforcement**: Restricts tools to `read`, `bash`, `grep`, `find`, `ls`
 - **Bash allowlist**: Only read-only bash commands are allowed
-- **Structured questions**: Uses `ask_user_question` to clarify requirements
-- **Todo tracking**: Uses `todo` tool to create and manage a plan
+- **Plan extraction**: Extracts numbered steps from `Plan:` sections
+- **Overlay widget**: Clean tree-style TUI above the editor with status glyphs
+- **Progress tracking**: `[DONE:n]` markers track completion during execution
 - **Session persistence**: State survives session resume
 
 ## Recommended companion packages
 
 ```bash
-pi install npm:@juicesharp/rpiv-todo
 pi install npm:@juicesharp/rpiv-ask-user-question
 ```
 
@@ -30,6 +28,7 @@ pi install git:github.com/fhaze/pi-plan-mode
 | Command | Description |
 |---------|-------------|
 | `/plan` | Toggle plan mode |
+| `/todos` | Show current plan progress |
 
 ## Shortcuts
 
@@ -46,20 +45,36 @@ pi --plan    # Start in plan mode
 ## Usage
 
 1. Enable plan mode with `/plan` or `Ctrl+Shift+P`
-2. The agent explores the codebase in read-only mode
-3. For complex tasks, the agent creates a structured todo list using the `todo` tool
-4. For simple tasks, the agent just confirms its approach briefly
-5. Disable plan mode with `/plan` to restore full write access
+2. Ask the agent to analyze code and create a plan
+3. The agent outputs a numbered plan under a `Plan:` header:
+
+```
+Plan:
+1. Analyze the existing authentication module
+2. Design the new OAuth2 integration
+3. Update the user model and database schema
+4. Implement the auth flow
+5. Add tests
+```
+
+4. Choose **"Execute the plan"** when prompted
+5. During execution, the agent marks steps complete with `[DONE:n]` tags
+6. Overlay widget shows progress above the editor
 
 ## How It Works
 
 ### Plan Mode (Read-Only)
 
-- Only read-only exploration tools available
-- `ask_user_question` for clarifying questions
-- `todo` tool for creating a structured task list with dependencies
+- Only read-only tools available
 - Bash commands filtered through allowlist
 - Agent creates a plan without making changes
+
+### Execution Mode
+
+- Full tool access restored
+- Agent executes steps in order
+- `[DONE:n]` markers track completion
+- Overlay widget with tree connectors shows progress
 
 ### Command Allowlist
 
