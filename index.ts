@@ -330,13 +330,15 @@ After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.s
 
 		updateWidget(ctx);
 
-		if (todoItems.length === 0) return;
+		const hasTodos = todoItems.length > 0;
+		const options = hasTodos
+			? ["Execute the plan (track progress)", "Stay in plan mode", "Refine the plan"]
+			: ["Stay in plan mode", "Ask me something else"];
 
-		const choice = await ctx.ui.select("Plan mode — what next?", [
-			"Execute the plan (track progress)",
-			"Stay in plan mode",
-			"Refine the plan",
-		]);
+		const choice = await ctx.ui.select(
+			hasTodos ? "Plan mode — what next?" : "Plan mode — no plan detected. What next?",
+			options,
+		);
 
 		if (choice === "Execute the plan (track progress)") {
 			planModeEnabled = false;
