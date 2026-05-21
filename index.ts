@@ -32,11 +32,11 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	function updateStatus(ctx: ExtensionContext): void {
 		if (executionMode && todoItems.length > 0) {
 			const completed = todoItems.filter((t) => t.completed).length;
-			ctx.ui.setStatus("plan-mode", ctx.ui.theme.fg("accent", `📋 ${completed}/${todoItems.length}`));
+			ctx.ui.setStatus("plan", ctx.ui.theme.fg("accent", `📋 ${completed}/${todoItems.length}`));
 		} else if (planModeEnabled) {
-			ctx.ui.setStatus("plan-mode", ctx.ui.theme.fg("warning", "⏸ plan"));
+			ctx.ui.setStatus("plan", ctx.ui.theme.fg("warning", "⏸"));
 		} else {
-			ctx.ui.setStatus("plan-mode", undefined);
+			ctx.ui.setStatus("plan", undefined);
 		}
 
 		if (executionMode && todoItems.length > 0) {
