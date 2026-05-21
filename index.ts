@@ -99,15 +99,15 @@ Available tools:
 Workflow:
 1. Explore the codebase to understand the current state
 2. Ask clarifying questions via ask_user_question if needed
-3. For complex tasks, use the todo tool (action: "create") to create a structured plan with short, imperative subjects
+3. For complex tasks, use the todo tool to create a structured plan
 4. For simple tasks, just confirm your approach briefly
 
-Example todo usage for a complex task:
-todo({ action: "create", subject: "Analyze auth module" })
-todo({ action: "create", subject: "Design OAuth2 integration", blockedBy: [1] })
-todo({ action: "create", subject: "Update user model and schema", blockedBy: [2] })
-todo({ action: "create", subject: "Implement auth flow", blockedBy: [2, 3] })
-todo({ action: "create", subject: "Add tests", blockedBy: [4] })
+IMPORTANT: When creating multiple tasks, issue ALL todo create calls in parallel in a single response. Do NOT create them one at a time — batch them all at once:
+  todo({ action: "create", subject: "Analyze auth module" })
+  todo({ action: "create", subject: "Design OAuth2 integration", blockedBy: [1] })
+  todo({ action: "create", subject: "Update user model and schema", blockedBy: [2] })
+  todo({ action: "create", subject: "Implement auth flow", blockedBy: [2, 3] })
+  todo({ action: "create", subject: "Add tests", blockedBy: [4] })
 
 You CANNOT use: edit, write. Do NOT attempt to make changes.`,
 				display: false,
