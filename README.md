@@ -28,8 +28,7 @@ pi install git:github.com/fhaze/pi-plan-mode
 
 | Shortcut | Description |
 |----------|-------------|
-| `Ctrl+Alt+P` | Toggle plan mode |
-| `Shift+P` | Toggle plan mode |
+| `Ctrl+Shift+P` | Toggle plan mode |
 
 ## CLI Flag
 
