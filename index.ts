@@ -341,7 +341,7 @@ Always include [DONE:n] tags when a step is complete. Do NOT skip this.`,
 			updateWidget(ctx);
 			persistState();
 
-			pi.sendUserMessage(`Execute the plan. Start with: ${todoItems[0].text}`);
+			pi.sendUserMessage(`Execute the plan. Start with: ${todoItems[0].text}`, { deliverAs: "followUp" });
 		} else if (choice === "Refine the plan") {
 			const refinement = await ctx.ui.editor("Refine the plan:", "");
 			if (refinement?.trim()) {
