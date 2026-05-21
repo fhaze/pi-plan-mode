@@ -1,7 +1,8 @@
 import type { AgentMessage } from "@mariozechner/pi-ai";
 import type { AssistantMessage, TextContent } from "@mariozechner/pi-ai";
 import type { ExtensionAPI, ExtensionContext, Theme } from "@mariozechner/pi-coding-agent";
-import { Key } from "@mariozechner/pi-tui";
+import { Key, Text } from "@mariozechner/pi-tui";
+import { Type } from "typebox";
 import { extractTodoItems, isSafeCommand, markCompletedSteps, type TodoItem } from "./utils.ts";
 
 const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "ask_user_question"];
@@ -39,7 +40,6 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	let todoItems: TodoItem[] = [];
 	let widgetRegistered = false;
 	let tuiRef: { requestRender(): void } | undefined;
-	let hiddenCompleted = new Set<number>();
 
 	pi.registerFlag("plan", {
 		description: "Start in plan mode (read-only exploration)",
@@ -48,7 +48,7 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	});
 
 	function renderWidget(theme: Theme, width: number): string[] {
-		const visible = todoItems.filter((item) => !hiddenCompleted.has(item.step));
+		const visible = todoItems;
 		if (visible.length === 0 && !executionMode && !planModeEnabled) return [];
 
 		const truncate = (line: string): string => {
@@ -132,7 +132,6 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 		planModeEnabled = !planModeEnabled;
 		executionMode = false;
 		todoItems = [];
-		hiddenCompleted.clear();
 
 		if (planModeEnabled) {
 			pi.setActiveTools(PLAN_MODE_TOOLS);
@@ -151,6 +150,37 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 			executing: executionMode,
 		});
 	}
+
+	pi.registerTool({
+		name: "complete_step",
+		label: "Complete Step",
+		description: "Mark a plan step as completed. Call this after finishing each step during plan execution.",
+		promptSnippet: "Mark a plan step as done after completing it",
+		parameters: Type.Object({
+			step: Type.Number({ description: "The step number to mark as completed" }),
+		}),
+		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+			const step = params.step as number;
+			const item = todoItems.find((t) => t.step === step);
+			if (!item) {
+				return { content: [{ type: "text", text: `Step ${step} not found in plan.` }], isError: true };
+			}
+			if (item.completed) {
+				return { content: [{ type: "text", text: `Step ${step} already completed.` }] };
+			}
+			item.completed = true;
+			updateWidget(ctx);
+			persistState();
+			const completed = todoItems.filter((t) => t.completed).length;
+			return {
+				content: [{ type: "text", text: `Step ${step} done: ${item.text} (${completed}/${todoItems.length})` }],
+			};
+		},
+		renderResult(result, _opts, theme) {
+			if (result.isError) return new Text(theme.fg("error", `✗ ${result.content[0].text}`), 0, 0);
+			return new Text(theme.fg("success", `✓ ${result.content[0].text}`), 0, 0);
+		},
+	});
 
 	pi.registerCommand("plan", {
 		description: "Toggle plan mode (read-only exploration)",
@@ -264,29 +294,17 @@ ${todoList}
 
 Execute each step in order.
 
-IMPORTANT — Progress tracking:
-This plan is tracked automatically via text markers in your response. There is NO todo tool available. Do NOT call any todo, todo_write, or task management tool — they do not exist.
+After completing a step, call complete_step({ step: n }) to mark it done. For example, after finishing step ${remaining[0]?.step ?? 1}, call:
+  complete_step({ step: ${remaining[0]?.step ?? 1} })
 
-To mark a step as complete, include a [DONE:n] tag as PLAIN TEXT in your response (where n is the step number).
-
-Correct example (plain text in your response):
-  "I've updated the authentication module. [DONE:1] Now moving to step 2..."
-
-Wrong — do NOT do this:
-  todo_write({ id: 1, status: "completed" })   ← THIS TOOL DOES NOT EXIST
-
-After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.step ?? 1}] in your response text.`,
+You MUST call complete_step for each completed step — this is how progress is tracked.`,
 					display: false,
 				},
 			};
 		}
 	});
 
-	pi.on("agent_start", async () => {
-		if (executionMode) {
-			hiddenCompleted = new Set();
-		}
-	});
+	pi.on("agent_start", async () => {});
 
 	pi.on("turn_end", async (event, ctx) => {
 		if (!executionMode || todoItems.length === 0) return;
@@ -294,11 +312,6 @@ After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.s
 
 		const text = getTextContent(event.message);
 		if (markCompletedSteps(text, todoItems) > 0) {
-			for (const item of todoItems) {
-				if (item.completed) {
-					hiddenCompleted.add(item.step);
-				}
-			}
 			updateWidget(ctx);
 		}
 		persistState();
@@ -314,7 +327,6 @@ After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.s
 				);
 				executionMode = false;
 				todoItems = [];
-				hiddenCompleted.clear();
 				pi.setActiveTools(NORMAL_MODE_TOOLS);
 				updateWidget(ctx);
 				persistState();
@@ -347,7 +359,6 @@ After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.s
 		if (choice === "Execute the plan (track progress)") {
 			planModeEnabled = false;
 			executionMode = true;
-			hiddenCompleted.clear();
 			pi.setActiveTools(NORMAL_MODE_TOOLS);
 			updateWidget(ctx);
 			persistState();
