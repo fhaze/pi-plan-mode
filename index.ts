@@ -241,7 +241,9 @@ Plan:
 4. Implement the auth flow
 5. Add tests
 
-You CANNOT use: edit, write. Do NOT attempt to make changes.`,
+You CANNOT use: edit, write. Do NOT attempt to make changes.
+
+Do NOT ask the user if they want to execute the plan or what to do next. Do NOT use ask_user_question for anything other than clarifying requirements. After presenting your plan, stop — the system will automatically ask the user what to do next.`,
 					display: false,
 				},
 			};
