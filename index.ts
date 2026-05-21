@@ -259,7 +259,14 @@ Remaining steps:
 ${todoList}
 
 Execute each step in order.
-After completing a step, include a [DONE:n] tag in your response.`,
+
+IMPORTANT: You MUST mark each completed step by including a [DONE:n] tag in your response (where n is the step number). These tags are how progress is tracked.
+
+Examples:
+- After finishing step ${remaining[0]?.step ?? 1}: include [DONE:${remaining[0]?.step ?? 1}] in your response
+- After finishing multiple steps: include [DONE:1] [DONE:2] [DONE:3]
+
+Always include [DONE:n] tags when a step is complete. Do NOT skip this.`,
 					display: false,
 				},
 			};
