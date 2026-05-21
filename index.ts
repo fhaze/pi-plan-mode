@@ -6,6 +6,7 @@ import { Type } from "typebox";
 import { extractTodoItems, isSafeCommand, markCompletedSteps, type TodoItem } from "./utils.ts";
 
 const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "ask_user_question"];
+const EXECUTION_MODE_TOOLS = ["read", "bash", "edit", "write", "complete_step"];
 const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
 const WIDGET_KEY = "plan-mode";
 const MAX_WIDGET_LINES = 12;
@@ -359,7 +360,7 @@ You MUST call complete_step for each completed step — this is how progress is 
 		if (choice === "Execute the plan (track progress)") {
 			planModeEnabled = false;
 			executionMode = true;
-			pi.setActiveTools(NORMAL_MODE_TOOLS);
+			pi.setActiveTools(EXECUTION_MODE_TOOLS);
 			updateWidget(ctx);
 			persistState();
 
