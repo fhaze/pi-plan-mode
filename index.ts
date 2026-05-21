@@ -260,13 +260,18 @@ ${todoList}
 
 Execute each step in order.
 
-IMPORTANT: You MUST mark each completed step by including a [DONE:n] tag in your response (where n is the step number). These tags are how progress is tracked.
+IMPORTANT — Progress tracking:
+This plan is tracked automatically via text markers in your response. There is NO todo tool available. Do NOT call any todo, todo_write, or task management tool — they do not exist.
 
-Examples:
-- After finishing step ${remaining[0]?.step ?? 1}: include [DONE:${remaining[0]?.step ?? 1}] in your response
-- After finishing multiple steps: include [DONE:1] [DONE:2] [DONE:3]
+To mark a step as complete, include a [DONE:n] tag as PLAIN TEXT in your response (where n is the step number).
 
-Always include [DONE:n] tags when a step is complete. Do NOT skip this.`,
+Correct example (plain text in your response):
+  "I've updated the authentication module. [DONE:1] Now moving to step 2..."
+
+Wrong — do NOT do this:
+  todo_write({ id: 1, status: "completed" })   ← THIS TOOL DOES NOT EXIST
+
+After finishing step ${remaining[0]?.step ?? 1}, include [DONE:${remaining[0]?.step ?? 1}] in your response text.`,
 					display: false,
 				},
 			};
