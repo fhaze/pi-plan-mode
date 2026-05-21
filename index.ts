@@ -4,7 +4,7 @@ import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-age
 import { Key } from "@mariozechner/pi-tui";
 import { extractTodoItems, isSafeCommand, markCompletedSteps, type TodoItem } from "./utils.ts";
 
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire"];
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls"];
 const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
 
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
@@ -152,7 +152,7 @@ Restrictions:
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
-Ask clarifying questions using the questionnaire tool.
+Ask clarifying questions if requirements are ambiguous.
 
 Create a detailed numbered plan under a "Plan:" header:
 
